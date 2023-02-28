@@ -34,7 +34,10 @@ function Card(props) {
           alt="image"
           onError={onErrorHandler}
           fill
-          className={styles.cardImg}
+          className={styles.cardImg} 
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
         />
       </motion.div>
     </div>
