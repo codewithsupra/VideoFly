@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import { magicClient } from '../../lib/magic-client';
 import styles from './NavBar.module.css';
 
-function NavBar(props) {
+function NavBar() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [username, setUsername] = useState('');
   const router = useRouter();
 
-  const { username } = props;
+  useEffect(() => {
+    async function getMagicMetadata() {
+      try {
+        const { email } = await magicClient.user.getMetadata();
+        if (email) {
+          setUsername(email);
+        }
+      } catch (error) {
+        console.error('Error retrieving user email', error);
+      }
+    }
+    getMagicMetadata();
+  }, []);
 
   function onClickHomeHandler(event) {
     event.preventDefault();
@@ -26,7 +40,23 @@ function NavBar(props) {
     setShowDropdown(!showDropdown);
   }
 
-  function signOutHandler() {}
+  async function signOutHandler(event) {
+    event.preventDefault();
+
+    try {
+      await magicClient.user.logout();
+
+      if (await magicClient.user.isLoggedIn()) { // => `false`
+        console.error('Logging out failed!');
+        throw new Error('For some reasons logging out was not successful');
+      }
+      
+      router.push('/login');
+    } catch (error) {
+      console.error('Error logging out the user', error);
+      router.push('/login');
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -35,7 +65,7 @@ function NavBar(props) {
           <div className={styles.logoWrapper}>
             <Image
               src="/icons/netflix.svg"
-              alt="Netflix logo"
+              alt="Netfilmix logo"
               width={128}
               height={34}
             />
