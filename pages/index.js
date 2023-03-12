@@ -24,6 +24,7 @@ export default function Home({
         <NavBar />
 
         <Banner 
+          videoId="4zH5iYM4wJo"
           title="Clifford the red dog" 
           subTitle="A very cute and big dog" 
           imgUrl="/images/clifford.webp"
