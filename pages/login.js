@@ -36,30 +36,39 @@ export default function Login() {
   async function signInButtonHandler(event) {
     event.preventDefault();
     
-    if (userEmail.trim() !== '' && userEmail.includes('@')) {
-      // add more complex validation here, or on the serverside if there will be some code 
-      // before sending magic link, anyway it must have to be to prevent interruption
-      if (userEmail) {  
-        setUserMsg('');
-        setIsLoading(true);
-        // if it's all OK, including checking email in DB, then
-        
-        try {
-          const DIDToken = await magicClient.auth.loginWithMagicLink({ email: userEmail });
+    // could add more complex validation here
+    if (userEmail.trim() !== '' && userEmail.includes('@')) {  
+      setUserMsg('');
+      setIsLoading(true);
+      
+      try {
+        const DIDToken = await magicClient.auth.loginWithMagicLink({ email: userEmail });
 
-          if (DIDToken) {
+        if (DIDToken) {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${DIDToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          const loggedInResponse = await response.json();
+
+          //console.log(loggedInResponse);
+          if (loggedInResponse.done) {
             router.push('/');
+          } else {
+            setIsLoading(false);
+            setUserMsg('Something went wrong logging in');
           }
-
-        } catch (error) {
-          setIsLoading(false);
-          console.error('Something went wrong with loggin in!', error);
         }
 
+      } catch (error) {
+        setIsLoading(false);
+        console.error('Something went wrong with loggin in!', error);
       }
-      else {
-        setUserMsg('Please enter a valid email address!');
-      }
+
     }
     else {
       setUserMsg('Please enter a valid email address!');
