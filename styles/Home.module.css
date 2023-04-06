@@ -5,3 +5,17 @@
 .main {
   padding-bottom: 4rem;
 }
+
+.center {
+  margin: 8rem;
+  text-align: center;
+}
+
+.p404h1 {
+  font-size: 80px;
+  color: var(--red);
+}
+
+.p404h2 {
+  margin-top: 2rem;
+}

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { magicAdmin } from '../../lib/magic-admin';
 import { createNewUser, isNewUser } from '../../lib/db-hasura';
-import setCookie from '../../lib/cookies';
+import { setCookie } from '../../lib/cookies';
 
 export default async function login(req, res) {
   if (req.method === 'POST') {
@@ -27,12 +27,7 @@ export default async function login(req, res) {
       );
 
       const isNewUserRes = await isNewUser(token, metadata.issuer);
-      console.log(isNewUserRes);
-      //isNewUserRes && (await createNewUser(token, metadata));
-      if (isNewUserRes) {
-        const result = await createNewUser(token, metadata)
-        console.log(result);
-      }
+      isNewUserRes && (await createNewUser(token, metadata));
 
       setCookie(token, res);
       res.send({ done: true });

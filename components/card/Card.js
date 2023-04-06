@@ -7,7 +7,7 @@ import cls from 'classnames';
 import styles from './Card.module.css';
 
 function Card(props) {
-  const {imgUrl, size='medium', id} = props;
+  const { imgUrl, size='medium', id, shouldScale = true } = props;
   const [imgSrc, setImgSrc] = useState(imgUrl);
 
   const classMap = {
@@ -23,10 +23,12 @@ function Card(props) {
   }
 
   const scale = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
+  const shouldHover = shouldScale && { whileHover: { ...scale } };
 
   return (
     <div className={styles.container}>
-      <motion.div whileHover={{ ...scale }}
+      <motion.div 
+        { ...shouldHover }
         className={cls(styles.imgMotionWrapper, classMap[size])}
       >
         <Image

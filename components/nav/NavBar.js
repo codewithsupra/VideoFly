@@ -9,14 +9,17 @@ import styles from './NavBar.module.css';
 function NavBar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState('');
+  const [DIDToken, setDIDToken] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     async function getMagicMetadata() {
       try {
         const { email } = await magicClient.user.getMetadata();
+        const DIDToken = await magicClient.user.getIdToken();
         if (email) {
           setUsername(email);
+          setDIDToken(DIDToken);
         }
       } catch (error) {
         console.error('Error retrieving user email', error);
@@ -44,16 +47,21 @@ function NavBar() {
     event.preventDefault();
 
     try {
-      await magicClient.user.logout();
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${DIDToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-      if (await magicClient.user.isLoggedIn()) { // => `false`
-        console.error('Logging out failed!');
-        throw new Error('For some reasons logging out was not successful');
+      const res = await response.json();
+      console.log(res)
+      if (res) {
+        setDIDToken('');
       }
-      
-      router.push('/login');
     } catch (error) {
-      console.error('Error logging out the user', error);
+      console.error('Error logging out', error);
       router.push('/login');
     }
   }
