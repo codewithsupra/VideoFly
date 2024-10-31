@@ -2,7 +2,7 @@ import Head from 'next/head';
 import NavBar from '../../components/nav/NavBar';
 
 import SectionCards from '../../components/card/SectionCards';
-import { useVerifyUser } from '../../hooks/useVerifyUser';
+import { VerifyUser } from '../../hooks/useVerifyUser';
 import { getMyListVideos } from '../../lib/get-videos';
 import styles from '../../styles/MyList.module.css';
 
@@ -32,7 +32,7 @@ export default MyList;
 
 
 export async function getServerSideProps(context) {
-  const { userId, token } = await useVerifyUser(context);
+  const { userId, token } = await VerifyUser(context);
 
   if (!userId) {
     return {

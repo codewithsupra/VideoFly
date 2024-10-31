@@ -5,7 +5,7 @@ import SectionCards from '../components/card/SectionCards';
 import NavBar from '../components/nav/NavBar';
 import { getVideos, getPopularVideos, getWatchItAgainVideos } from '../lib/get-videos';
 import styles from '../styles/Home.module.css';
-import { useVerifyUser } from '../hooks/useVerifyUser';
+import { VerifyUser } from '../hooks/useVerifyUser';
 
 export default function Home({ 
   watchItAgainVideos,
@@ -45,7 +45,7 @@ export default function Home({
 
 
 export async function getServerSideProps(context) {
-  const { userId, token } = await useVerifyUser(context);
+  const { userId, token } = await VerifyUser(context);
 
   if (!userId) {
     return {
